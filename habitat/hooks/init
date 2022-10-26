@@ -1,0 +1,6 @@
+#!/bin/sh
+
+exec 2>&1
+
+cp {{pkg.path}}/example-static-files {{pkg.svc_files_path}}
+cp -r {{pkg.path}}/files {{pkg.svc_files_path}}
