@@ -14,32 +14,6 @@ use poem::{
 use rust_embed::RustEmbed;
 use serde::Deserialize;
 
-#[derive(RustEmbed)]
-#[folder = "files"]
-pub struct Files;
-
-#[handler]
-fn hello(Path(name): Path<String>) -> String {
-    format!("hello: {}", name)
-}
-
-#[derive(Deserialize)]
-struct FourBoxParams {
-    first_name: String,
-    last_name: String,
-    message_one: String,
-    message_two: String,
-}
-
-#[handler]
-async fn four_box(Form(params): Form<FourBoxParams>) -> impl IntoResponse {
-    println!(
-        "LOG: first_name={:?} first_name={:?} message_one={:?} message_two={:?}",
-        params.first_name, params.last_name, params.message_one, params.message_two
-    );
-    Response::builder().status(StatusCode::OK).finish()
-}
-
 #[handler]
 async fn upload_form_save() -> Html<&'static str> {
     Html(
@@ -79,6 +53,33 @@ async fn upload_save(mut multipart: Multipart) -> &'static str {
     }
     "File uploaded successfully!"
 }
+
+#[derive(RustEmbed)]
+#[folder = "files"]
+pub struct Files;
+
+#[handler]
+fn hello(Path(name): Path<String>) -> String {
+    format!("hello: {}", name)
+}
+
+#[derive(Deserialize)]
+struct FourBoxParams {
+    first_name: String,
+    last_name: String,
+    message_one: String,
+    message_two: String,
+}
+
+#[handler]
+async fn four_box(Form(params): Form<FourBoxParams>) -> impl IntoResponse {
+    println!(
+        "LOG: first_name={:?} first_name={:?} message_one={:?} message_two={:?}",
+        params.first_name, params.last_name, params.message_one, params.message_two
+    );
+    Response::builder().status(StatusCode::OK).finish()
+}
+
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
