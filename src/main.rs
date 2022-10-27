@@ -64,22 +64,23 @@ fn hello(Path(name): Path<String>) -> String {
 }
 
 #[derive(Deserialize)]
-struct FourBoxParams {
-    first_name: String,
-    last_name: String,
-    message_one: String,
-    message_two: String,
+struct ModuleFiveParams {
+    merchant_id: String,
+    store_name: String,
+    street: String,
+    city: String,
+    state: String,
+    zip: String,
 }
 
 #[handler]
-async fn four_box(Form(params): Form<FourBoxParams>) -> impl IntoResponse {
+async fn module_five(Form(params): Form<ModuleFiveParams>) -> impl IntoResponse {
     println!(
-        "LOG: first_name={:?} first_name={:?} message_one={:?} message_two={:?}",
-        params.first_name, params.last_name, params.message_one, params.message_two
+        "LOG: merchant_id={:?} store_name={:?} street={:?} city={:?}, state={:?}, zip={:?}",
+        params.merchant_id, params.store_name, params.street, params.city, params.state, params.zip
     );
     Response::builder().status(StatusCode::OK).finish()
 }
-
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
@@ -91,8 +92,8 @@ async fn main() -> Result<(), std::io::Error> {
     let app = Route::new()
         .at("/", EmbeddedFileEndpoint::<Files>::new("index.html"))
         .at(
-            "/four_box",
-            get(EmbeddedFileEndpoint::<Files>::new("four_box_form.html")).post(four_box),
+            "/module_five",
+            get(EmbeddedFileEndpoint::<Files>::new("module_five.html")).post(module_five),
         )
         .at("/hello/:name", get(hello))
         .at("/upload_save", get(upload_form_save).post(upload_save))

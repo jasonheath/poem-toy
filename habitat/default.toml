@@ -2,7 +2,9 @@
 # See the docs at https://www.habitat.sh/docs/create-packages-configure/.
 # You can safely delete this file if you don't need it.
 
-first_name = "Elliot"
-last_name = "Gould"
-message_one = "Hello Elliot."
-message_two = "Nice to see you."
+merchant_id = "Buc-ee's"
+store_number = "1"
+street = "899 Oyster Creek Drive"
+city = "Lake Jackson"
+state = "TX"
+zip = "77566"
