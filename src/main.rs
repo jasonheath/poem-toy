@@ -23,26 +23,6 @@ fn hello(Path(name): Path<String>) -> String {
     format!("hello: {}", name)
 }
 
-#[handler]
-async fn upload_form_log() -> Html<&'static str> {
-    Html(
-        r###"
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Poem Toy</title>
-        </head>
-        <body>
-            <form action="/upload_log" enctype="multipart/form-data" method="post">
-                <input type="file" name="upload" id="file">
-                <button type="submit">Submit</button>
-            </form>
-        </body>
-        </html>
-        "###,
-    )
-}
-
 #[derive(Deserialize)]
 struct FourBoxParams {
     first_name: String,
@@ -81,23 +61,6 @@ async fn upload_form_save() -> Html<&'static str> {
 }
 
 #[handler]
-async fn upload_log(mut multipart: Multipart) -> &'static str {
-    while let Ok(Some(field)) = multipart.next_field().await {
-        let name = field.name().map(ToString::to_string);
-        let file_name = field.file_name().map(ToString::to_string);
-        if let Ok(bytes) = field.bytes().await {
-            println!(
-                "LOG: name={:?} filename={:?} length={}",
-                name,
-                file_name,
-                bytes.len()
-            );
-        }
-    }
-    "File uploaded successfully!"
-}
-
-#[handler]
 async fn upload_save(mut multipart: Multipart) -> &'static str {
     while let Ok(Some(field)) = multipart.next_field().await {
         let name = field.name().map(ToString::to_string);
@@ -131,7 +94,6 @@ async fn main() -> Result<(), std::io::Error> {
             get(EmbeddedFileEndpoint::<Files>::new("four_box_form.html")).post(four_box),
         )
         .at("/hello/:name", get(hello))
-        .at("/upload_log", get(upload_form_log).post(upload_log))
         .at("/upload_save", get(upload_form_save).post(upload_save))
         .catch_error(|_: NotFoundError| async move {
             Response::builder()
