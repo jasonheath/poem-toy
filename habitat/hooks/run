@@ -4,4 +4,4 @@ exec 2>&1
 
 cd {{pkg.svc_files_path}}
 
-exec  {{pkg.svc_files_path}}/example-static-files 
+exec  {{pkg.svc_files_path}}/{{pkg.name}}

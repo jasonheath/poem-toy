@@ -47,8 +47,13 @@ do_verify() {
 # build and install as part of building your package.
 do_build() {
   # do_default_build
+  build_line "rm -rf ./habitat/poem-toy"
   rm -rf ./habitat/poem-toy
+
+  build_line "cargo clean"
   cargo clean
+
+  build_line "cargo build --release"
   cargo build --release
 }
 
@@ -61,7 +66,7 @@ do_build() {
 # specific directories in your package, or installing pre-built binaries into
 # your package.
 do_install() {
-  cp target/release/example-static-files ${pkg_prefix}
+  cp target/release/${pkg_name} ${pkg_prefix}
   cp -r files ${pkg_prefix}
 }
 
