@@ -1,0 +1,8 @@
+{
+    "merchant_id": "{{ cfg.merchant_id }}",
+    "store_number": "{{ cfg.store_number }}",
+    "street": "{{ cfg.street }}",
+    "city": "{{ cfg.city}}",
+    "state": "{{ cfg.state }}",
+    "zip": "{{ cfg.zip }}"
+  }
