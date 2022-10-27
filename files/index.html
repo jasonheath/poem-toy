@@ -1,11 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Hello world</title>
-</head>
-<body>
-<div style="font-size: 32pt">Poem Web Framework</div>
-<image style="width:256px" src="images/poem-logo.jpg"></image>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Poem Toy</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Poem Web Framework Demo App - embeded</h1>
+    <h3>Four Box Form</h3>
+    <a href="/four_box">/four_box</a>
+    <h3>Say Hello...</h3>
+    <p>
+      Anything sent to /hello/anything will say hello to anything so long as its
+      one word. For example,
+      <a href="/hello/elliot">Say Hello to Elliot</a>.
+    </p>
+    <h3>Upload a File...</h3>
+    <p>
+      Go to <a href="/upload_log">/upload_log</a> to upload a file and have its
+      stats detailed in the log. Alternatively, go to
+      <a href="/upload_save">/upload_save</a> to have the file written to the
+      file system.
+    </p>
+  </body>
 </html>

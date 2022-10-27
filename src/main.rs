@@ -1,60 +1,22 @@
 use std::fs::{self};
 
 use poem::{
+    endpoint::EmbeddedFileEndpoint,
     error::NotFoundError,
     get, handler,
     http::StatusCode,
     listener::TcpListener,
-    web::{Html, Multipart, Path},
-    EndpointExt, Response, Route, Server,
+    web::Path,
+    web::{Form, Html, Multipart},
+    EndpointExt, IntoResponse, Response, Route, Server,
 };
 
-#[handler]
-async fn index() -> Html<&'static str> {
-    Html(
-        r###"
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <title>Poem Toy</title>
-        </head>
-        <body>
-            <p>
-                <h1>Poem Web Framework Demo App</h1>
-            </p>
-            <p>
-                <h3>Say Hello...</h3>
-                <p>
-                    Anything sent to /hello/anything will say hello to anything
-                    so long as its one word. For example,
-                    <a href=/hello/elliot>Say Hello to Elliot</a>.
-                </p>
-            </p>
-            <p>
-                <h3>Upload a File...</h3>
-                <p>
-                    Go to <a href='/upload_log'>/upload_log</a> to upload a file and
-                    have its stats detailed in the log.  Alternatively, go to
-                    <a href='/upload_save'>/upload_save</a> to have the file
-                    written to the file system.
+use rust_embed::RustEmbed;
+use serde::Deserialize;
 
-                </p>
-            </p>
-            <p>
-                <h3></h3>
-                <p>
-                </p>
-            </p>
-            <p>
-                <h3></h3>
-                <p>
-                </p>
-            </p>
-        </body>
-        </html>
-        "###,
-    )
-}
+#[derive(RustEmbed)]
+#[folder = "files"]
+pub struct Files;
 
 #[handler]
 fn hello(Path(name): Path<String>) -> String {
@@ -79,6 +41,23 @@ async fn upload_form_log() -> Html<&'static str> {
         </html>
         "###,
     )
+}
+
+#[derive(Deserialize)]
+struct FourBoxParams {
+    first_name: String,
+    last_name: String,
+    message_one: String,
+    message_two: String,
+}
+
+#[handler]
+async fn four_box(Form(params): Form<FourBoxParams>) -> impl IntoResponse {
+    println!(
+        "LOG: first_name={:?} first_name={:?} message_one={:?} message_two={:?}",
+        params.first_name, params.last_name, params.message_one, params.message_two
+    );
+    Response::builder().status(StatusCode::OK).finish()
 }
 
 #[handler]
@@ -146,7 +125,11 @@ async fn main() -> Result<(), std::io::Error> {
     tracing_subscriber::fmt::init();
 
     let app = Route::new()
-        .at("/", get(index))
+        .at("/", EmbeddedFileEndpoint::<Files>::new("index.html"))
+        .at(
+            "/four_box",
+            get(EmbeddedFileEndpoint::<Files>::new("four_box_form.html")).post(four_box),
+        )
         .at("/hello/:name", get(hello))
         .at("/upload_log", get(upload_form_log).post(upload_log))
         .at("/upload_save", get(upload_form_save).post(upload_save))
@@ -160,19 +143,3 @@ async fn main() -> Result<(), std::io::Error> {
         .run(app)
         .await
 }
-
-// #[tokio::main]
-// async fn main() -> Result<(), std::io::Error> {
-//     if std::env::var_os("RUST_LOG").is_none() {
-//         std::env::set_var("RUST_LOG", "poem=debug");
-//     }
-//     tracing_subscriber::fmt::init();
-//     let app = Route::new().nest(
-//         "/",
-//         //StaticFilesEndpoint::new("./poem/static-files/files").show_files_listing(),
-//         StaticFilesEndpoint::new("./files").show_files_listing(),
-//     );
-//     Server::new(TcpListener::bind("127.0.0.1:3000"))
-//         .run(app)
-//         .await
-// }
