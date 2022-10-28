@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Poem Toy - Module Five</title>
+    <style>
+      label {
+        color: red;
+        width: 7em;
+        display: inline-block;
+        text-align: left;
+        margin-bottom: 0.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="=module_five_form" action="/module_five" method="post" enctype="application/x-www-form-urlencoded" >
+      <label for="merchant_id">Merchant ID:</label>
+      <input type="text" id="merchant_id" name="merchant_id" value="{{ t_merchant_id }}">
+      <br>
+      <label for="store_number">Store Number:</label>
+      <input type="text" id="store_number" name="store_number" value="{{ t_store_number }}">
+      <br>
+      <label for="street">Street:</label>
+      <input type="text" id="street" name="street" value="{{ t_street }}">
+      <br>
+      <label for="city">City:</label>
+      <input type="text" id="city" name="city" value="{{ t_city }}">
+      <br>
+      <label for="state">State:</label>
+      <input type="text" id="state" name="state" value="{{ t_state }}">
+      <br>
+      <label for="zip">Zip:</label>
+      <input type="text" id="zip" name="zip" value="{{ t_zip }}">
+      <br>
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
