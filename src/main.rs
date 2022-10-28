@@ -14,6 +14,17 @@ use poem::{
 use rust_embed::RustEmbed;
 use serde::Deserialize;
 
+//----------------------------------------------------------------------
+// simple hello handler
+//----------------------------------------------------------------------
+#[handler]
+fn hello(Path(name): Path<String>) -> String {
+    format!("hello: {}", name)
+}
+
+//----------------------------------------------------------------------
+// file upload via form and save to file system
+//----------------------------------------------------------------------
 #[handler]
 async fn upload_form_save() -> Html<&'static str> {
     Html(
@@ -54,15 +65,16 @@ async fn upload_save(mut multipart: Multipart) -> &'static str {
     "File uploaded successfully!"
 }
 
+//----------------------------------------------------------------------
+// embedded files
+//----------------------------------------------------------------------
 #[derive(RustEmbed)]
 #[folder = "files"]
 pub struct Files;
 
-#[handler]
-fn hello(Path(name): Path<String>) -> String {
-    format!("hello: {}", name)
-}
-
+//----------------------------------------------------------------------
+// module five
+//----------------------------------------------------------------------
 #[derive(Deserialize)]
 struct ModuleFiveParams {
     merchant_id: String,
@@ -82,6 +94,9 @@ async fn module_five(Form(params): Form<ModuleFiveParams>) -> impl IntoResponse 
     Response::builder().status(StatusCode::OK).finish()
 }
 
+//----------------------------------------------------------------------
+// main
+//----------------------------------------------------------------------
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
     if std::env::var_os("RUST_LOG").is_none() {
@@ -90,13 +105,13 @@ async fn main() -> Result<(), std::io::Error> {
     tracing_subscriber::fmt::init();
 
     let app = Route::new()
+        .at("/hello/:name", get(hello))
+        .at("/upload_save", get(upload_form_save).post(upload_save))
         .at("/", EmbeddedFileEndpoint::<Files>::new("index.html"))
         .at(
             "/module_five",
             get(EmbeddedFileEndpoint::<Files>::new("module_five.html")).post(module_five),
         )
-        .at("/hello/:name", get(hello))
-        .at("/upload_save", get(upload_form_save).post(upload_save))
         .catch_error(|_: NotFoundError| async move {
             Response::builder()
                 .status(StatusCode::NOT_FOUND)
