@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::fs::{self, File};
 use std::io::{self, prelude::*, Error};
+use std::process::Command;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use poem::error::InternalServerError;
 use poem::{
@@ -123,9 +125,41 @@ fn write_string_to_file(data: String, path_str: &str) -> Result<File, io::Error>
     Ok(file)
 }
 
+fn hab_config_apply() {
+    let d = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
+    let s = d.as_secs().to_string();
+
+    // sudo ???
+    // hab config apply
+    //      poem-toy.default
+    //      $(date +%s)
+    //      changes.toml
+    // hab config apply poem-toy.default $(date +%s) changes.toml
+
+    let mut cmd = Command::new("/bin/hab");
+    cmd.arg("config")
+        .arg("apply")
+        .arg("poem-toy.default")
+        .arg(s)
+        .arg("/hab/svc/poem-toy/files/changes.toml");
+    // JAH: ABOVE is for running inside of supervisor
+    // JAH: BELOW is for running outside of supervisor
+    // .arg("changes.toml");
+
+    println!("CMD:{:#?}", &cmd);
+
+    let output = cmd.output();
+
+    println!("COMMAND:\n{:#?}", output);
+}
+
 #[handler]
 fn module_five() -> Result<Html<String>, poem::Error> {
-    let map = json_to_hashmap("habitat/config/application-settings.json").unwrap();
+    // let map = json_to_hashmap("habitat/config/application-settings.json").unwrap();
+    // JAH: ABOVE is for running outside of supervisor
+    // JAH: BELOW is for running inside of supervisor
+    let map = json_to_hashmap("/hab/svc/poem-toy/config/application-settings.json").unwrap();
+
     let mut context = Context::new();
     context.insert("t_merchant_id", map.get("merchant_id").unwrap());
     context.insert("t_store_number", map.get("store_number").unwrap());
@@ -142,6 +176,8 @@ fn module_five() -> Result<Html<String>, poem::Error> {
 
 #[handler]
 async fn module_five_process(Form(params): Form<ModuleFiveParams>) -> impl IntoResponse {
+    hab_config_apply();
+
     let params= format!(
         "merchant_id = {:?}\nstore_number = {:?}\nstreet = {:?}\ncity = {:?}\nstate = {:?}\nzip = {:?}",
         params.merchant_id,

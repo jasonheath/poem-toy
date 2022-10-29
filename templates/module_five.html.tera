@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <title>Poem Toy - Module Five</title>
     <style>
+      body {
+        background-color:slategray;
+        color: linen;
+      }
       label {
-        color: red;
         width: 7em;
         display: inline-block;
         text-align: left;

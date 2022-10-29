@@ -66,8 +66,14 @@ do_build() {
 # specific directories in your package, or installing pre-built binaries into
 # your package.
 do_install() {
+  build_line "cp target/release/${pkg_name} ${pkg_prefix}"
   cp target/release/${pkg_name} ${pkg_prefix}
+
+  build_line "cp -r files ${pkg_prefix}"
   cp -r files ${pkg_prefix}
+
+  build_line "cp -r templates ${pkg_prefix}"
+  cp -r templates ${pkg_prefix}
 }
 
 # The default implementation is to strip any binaries in $pkg_prefix of their
