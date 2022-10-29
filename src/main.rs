@@ -176,8 +176,6 @@ fn module_five() -> Result<Html<String>, poem::Error> {
 
 #[handler]
 async fn module_five_process(Form(params): Form<ModuleFiveParams>) -> impl IntoResponse {
-    hab_config_apply();
-
     let params= format!(
         "merchant_id = {:?}\nstore_number = {:?}\nstreet = {:?}\ncity = {:?}\nstate = {:?}\nzip = {:?}",
         params.merchant_id,
@@ -192,6 +190,8 @@ async fn module_five_process(Form(params): Form<ModuleFiveParams>) -> impl IntoR
 
     let f = write_string_to_file(params, "changes.toml");
     println!("F:{:#?}", f);
+
+    hab_config_apply();
 
     let output = r###"
         <!DOCTYPE html>
