@@ -3,6 +3,7 @@ pkg_origin=jasonheath
 pkg_version="0.1.0"
 pkg_maintainer="Jason Heath <jason.heath@progress.com>"
 pkg_license=("Apache-2.0") # : When last reviewed poem was licensed Apache 2.0 and MIT
+pkg_svc_user="root"
 
 pkg_deps=(
   core/gcc
