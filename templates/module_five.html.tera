@@ -4,20 +4,36 @@
     <meta charset="UTF-8">
     <title>Poem Toy - Module Five</title>
     <style>
+      form {
+        margin: 4em 4em;
+        width: 26em;
+      }
+      button {
+          display: block;
+          align-self: center;
+          margin: .5em auto;
+      }
       body {
         background-color:slategray;
         color: linen;
       }
+      input {
+        width: 16em;
+      }
       label {
-        width: 7em;
+        width: 8em;
         display: inline-block;
         text-align: left;
         margin-bottom: 0.5em;
       }
+      h1 {
+        text-align: center;
+      }
     </style>
   </head>
   <body>
-    <form id="=module_five_form" action="/module_five" method="post" enctype="application/x-www-form-urlencoded" >
+    <form id="=module_five_form" action="/" method="post" enctype="application/x-www-form-urlencoded" >
+      <h1>Module Five</h1>
       <label for="merchant_id">Merchant ID:</label>
       <input type="text" id="merchant_id" name="merchant_id" value="{{ t_merchant_id }}">
       <br>

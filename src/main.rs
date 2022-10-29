@@ -199,9 +199,15 @@ async fn module_five_process(Form(params): Form<ModuleFiveParams>) -> impl IntoR
         <head>
             <title>Poem Toy</title>
             <meta charset="UTF-8">
+            <style>
+                body {
+                  background-color:slategray;
+                  color: linen;
+                }
+            </style>
         </head>
         <body>
-            <p>Please give it a moment before going back to <a href="/module_five">/module_five</a></p>
+            <p>Please give it a moment before going <a href="/">back to /</a>.  If it hasn't updated or hangs, please reload.</p>
         </body>
         </html>
         "###;
@@ -223,8 +229,8 @@ async fn main() -> Result<(), std::io::Error> {
     let app = Route::new()
         .at("/hello/:name", get(hello))
         .at("/upload_save", get(upload_form_save).post(upload_save))
-        .at("/", EmbeddedFileEndpoint::<Files>::new("index.html"))
-        .at("/module_five", get(module_five).post(module_five_process))
+        // .at("/", EmbeddedFileEndpoint::<Files>::new("index.html"))
+        .at("/", get(module_five).post(module_five_process))
         .catch_error(|_: NotFoundError| async move {
             Response::builder()
                 .status(StatusCode::NOT_FOUND)
